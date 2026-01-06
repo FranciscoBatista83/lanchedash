@@ -1,11 +1,22 @@
 from fastapi import FastAPI
+from app.database import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
+
+# Cria as tabelas no banco de dados
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="LancheDash API",
     description="API para sistema de delivery de lanches",
     version="1.0.0"
 )
+
+from app.routes import produto
+
+
+
+app.include_router(produto.router)
+
 
 # Configuração de CORS
 app.add_middleware(
@@ -30,27 +41,4 @@ async def health_check():
     """Endpoint de health check"""
     return {"status": "healthy"}
 
-@app.get("/api/v1/lanches")
-async def listar_lanches():
-    """Lista todos os lanches disponíveis (exemplo)"""
-    lanches_exemplo = [
-        {
-            "id": 1,
-            "nome": "X-Burger",
-            "descricao": "Hambúrguer com queijo, alface e tomate",
-            "preco": 15.90
-        },
-        {
-            "id": 2,
-            "nome": "X-Bacon",
-            "descricao": "Hambúrguer com queijo e bacon crocante",
-            "preco": 18.90
-        },
-        {
-            "id": 3,
-            "nome": "X-Salada",
-            "descricao": "Hambúrguer com queijo, alface, tomate e milho",
-            "preco": 16.90
-        }
-    ]
-    return {"lanches": lanches_exemplo}
+
