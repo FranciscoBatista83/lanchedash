@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.database import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
-from app.models import produto
+from app.models import produto, usuario
 
 # Cria as tabelas no banco de dados
 Base.metadata.create_all(bind=engine)
