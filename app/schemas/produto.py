@@ -7,9 +7,12 @@ class ProdutoBase(BaseModel):
     preco: Decimal
     categoria: Optional[str] = None
     ativo: bool = True
+    estoque_atual: int = 0
+    estoque_minimo: int = 0
 
 class ProdutoCreate(ProdutoBase):
     pass
+
 
 class Produto(ProdutoBase):
     id: int

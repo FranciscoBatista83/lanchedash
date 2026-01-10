@@ -1,7 +1,12 @@
-from fastapi import FastAPI
-from app.database import engine, Base
+from fastapi import FastAPI, HTTPException, status, Depends
+from sqlalchemy.orm import Session
+from app.database import engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
-from app.models import produto, usuario
+from app.models.usuario import Usuario
+from app.models.produto import Produto
+from app.models.pedido import Pedido, ItemPedido
+from app.models.caixa import Caixa, MovimentacaoCaixa
+from app.models.estoque import EstoqueMovimentacao
 
 # Cria as tabelas no banco de dados
 Base.metadata.create_all(bind=engine)
@@ -12,9 +17,15 @@ app = FastAPI(
     version="1.0.0"
 )
 
-from app.routes import produto
+from app.routes import produto, usuario, auth, pedido, caixa, estoque, relatorio
 
 app.include_router(produto.router)
+app.include_router(usuario.router)
+app.include_router(auth.router)
+app.include_router(pedido.router)
+app.include_router(caixa.router)
+app.include_router(estoque.router)
+app.include_router(relatorio.router)
 
 # Configuração de CORS
 app.add_middleware(
@@ -38,5 +49,3 @@ async def root():
 async def health_check():
     """Endpoint de health check"""
     return {"status": "healthy"}
-
-

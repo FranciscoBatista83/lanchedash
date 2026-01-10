@@ -1,111 +1,113 @@
 # 🍔 LancheDash
 
-API para sistema de delivery de lanches desenvolvida com FastAPI.
+API para sistema de gestão e delivery de lanches desenvolvida com FastAPI.
 
 ## 📋 Descrição
 
-LancheDash é uma API REST moderna para gerenciamento de pedidos de lanches, desenvolvida com FastAPI e Python 3.13.
+O **LancheDash** é um sistema de gerenciamento interno completo para lanchonetes. Ele permite o controle total desde o cadastro de cardápio e usuários até o fluxo de caixa diário, controle de estoque automatizado e relatórios gerenciais avançados.
 
-## 🚀 Tecnologias
+---
 
-- **Python** 3.13.7
-- **FastAPI** 0.128.0
-- **Uvicorn** 0.40.0
-- **Pydantic** 2.12.5
+## 🛠️ Tecnologias
 
-## 📦 Instalação
+- **Python** 3.13+
+- **FastAPI** (Web Framework)
+- **SQLAlchemy** (ORM / Banco de Dados SQLite)
+- **Bcrypt** (Segurança e Hash de Senhas)
+- **JWT (python-jose)** (Autenticação Segura)
+- **python-dotenv** (Gestão de Variáveis de Ambiente)
 
-### 1. Clone o repositório
+---
 
+## 📦 Instalação e Setup
+
+### 1. Preparar o Ambiente
 ```bash
 git clone https://github.com/FranciscoBatista83/lanchedash.git
 cd lanchedash
-```
-
-### 2. Crie e ative o ambiente virtual
-
-**Windows (Git Bash):**
-```bash
 python -m venv venv
-source venv/Scripts/activate
-```
-
-**Windows (PowerShell):**
-```powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-```
-
-**Linux/Mac:**
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-
-### 3. Instale as dependências
-
-```bash
+source venv/Scripts/activate  # Windows
 pip install -r requirements.txt
 ```
 
-## ▶️ Como executar
+### 2. Configurar Variáveis de Ambiente
+Crie um arquivo `.env` na raiz do projeto baseado no `.env.example`:
+```env
+SECRET_KEY=sua_chave_secreta_aqui
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+```
 
-Com o ambiente virtual ativado, execute:
+---
 
+## ▶️ Execução
+
+Para iniciar o servidor de desenvolvimento:
 ```bash
 uvicorn app.main:app --reload
 ```
+Acesse a documentação interativa em: **http://localhost:8000/docs**
 
-A API estará disponível em: **http://localhost:8000**
+---
 
-## 📚 Documentação
+## 🔐 Perfis de Acesso
 
-Após iniciar o servidor, acesse:
+O sistema utiliza **JWT para Autenticação** e possui dois níveis de permissão:
 
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+- **CAIXA**: 
+  - Abrir/Fechar Caixa.
+  - Lançar Pedidos, adicionar/remover itens e finalizar vendas.
+  - Consultar cardápio e histórico básico.
+- **ADMINISTRADOR**:
+  - Tudo o que o Caixa faz.
+  - CRUD completo de Produtos e Usuários.
+  - Reabrir ou Cancelar pedidos já finalizados.
+  - Ajustar estoque manualmente.
+  - **Acesso total aos Relatórios Gerenciais.**
 
-## 🛣️ Endpoints disponíveis
+---
 
-### Raiz
-- `GET /` - Informações básicas da API
+## 🛣️ Módulos Principais (Endpoints)
 
-### Health Check
-- `GET /health` - Verifica o status da API
+### 🔑 Autenticação
+- `POST /auth/login`: Obtém o Token de acesso.
 
-### Lanches
-- `GET /api/v1/lanches` - Lista todos os lanches disponíveis
+### 🍔 Cardápio (Produtos)
+- `GET /produtos`: Lista itens ativos.
+- `POST/PUT/DELETE /produtos`: Gestão do cardápio (🔒 Admin).
 
-## 📁 Estrutura do projeto
+### 🛒 Vendas & Pedidos
+- `POST /pedidos`: Inicia uma venda.
+- `POST/DELETE /pedidos/.../itens`: Gerencia itens no carrinho (Baixa auto. de estoque).
+- `POST /pedidos/.../finalizar`: Fecha a conta e registra o pagamento.
 
+### 💰 Fluxo de Caixa
+- `POST /caixa/abrir`: Inicia o dia com fundo de troco.
+- `POST /caixa/sangria`: Retirada de valores da gaveta.
+- `POST /caixa/fechar`: Encerra o dia com cálculo de divergências.
+
+### 📦 Estoque
+- `GET /estoque/alertas`: Lista produtos abaixo do mínimo.
+- `POST /estoque/ajuste`: Correção manual (🔒 Admin).
+
+### 📊 Relatórios (🔒 Admin)
+- `/relatorios/dashboard`: Resumo do faturamento diário.
+- `/relatorios/produtos`: Ranking de mais vendidos.
+- `/relatorios/financeiro`: Totais por forma de pagamento (Pix, Cartão, Dinheiro).
+
+---
+
+## 📁 Estrutura do Projeto
+
+```text
+app/
+├── core/       # Segurança e Dependências
+├── models/     # Tabelas SQL (SQLAlchemy)
+├── schemas/    # Validação e Serialização (Pydantic)
+├── services/   # Lógica de Negócio (CRUDs, Cálculos)
+├── routes/     # Endpoints da API
+└── main.py     # Ponto de entrada
 ```
-lanchedash/
-├── app/
-│   ├── models/
-│   └── main.py
-├── venv/
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
-
-## 🔧 Desenvolvimento
-
-### Desativar o ambiente virtual
-
-```bash
-deactivate
-```
-
-### Atualizar dependências
-
-```bash
-pip freeze > requirements.txt
-```
-
-## 📝 Licença
-
-Este projeto está em desenvolvimento.
 
 ## 👤 Autor
 

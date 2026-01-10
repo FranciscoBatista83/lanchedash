@@ -9,3 +9,8 @@ class Produto(Base):
     preco = Column(Numeric(10, 2), nullable=False)
     categoria = Column(String(100), index=True)
     ativo = Column(Boolean, default=True)
+    
+    # Controle de Estoque
+    estoque_atual = Column(Integer, default=0)
+    estoque_minimo = Column(Integer, default=0)
+
